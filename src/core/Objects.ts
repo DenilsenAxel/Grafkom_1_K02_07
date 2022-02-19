@@ -1,0 +1,1 @@
+// object class definition goes here

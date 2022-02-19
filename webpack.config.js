@@ -7,8 +7,6 @@ var TEMPLATE_PATH = path.resolve(ROOT_PATH, 'src/index.html');
 var SHADER_PATH = path.resolve(ROOT_PATH, 'src/shaders');
 var BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
 
-var debug = process.env.NODE_ENV !== 'production';
-
 module.exports = {
     entry: ENTRY_PATH,
     plugins: [
@@ -28,14 +26,14 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.tsx$/,
+                test: /\.ts$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
             {
                 test: /\.glsl$/,
                 include: SHADER_PATH,
-                loader: 'webpack-glsl'
+                loader: 'webpack-glsl-loader'
             }
         ]
     },
