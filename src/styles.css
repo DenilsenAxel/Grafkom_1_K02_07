@@ -39,8 +39,17 @@ body {
     margin: .5em 0;
 }
 
+.active, .btn:hover {
+    background-color: #999;
+    color: white;
+}
+
 button {
     padding: .75em 1em;
+    border: 1px solid;
+    border-radius: 8px;
+    background-color: #ddd;
+    cursor: pointer;
 }
 
 #glCanvas {
