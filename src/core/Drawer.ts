@@ -1,5 +1,5 @@
 import { ObjectType, Vertex } from "../types/interfaces";
-import { BaseObject, PointObject } from "./Objects";
+import { BaseObject, PointObject, PolygonObject } from "./Objects";
 
 export class Drawer {
     private canvas!: HTMLCanvasElement;
@@ -56,6 +56,8 @@ export class Drawer {
     public drawObject(obj: BaseObject) {        
         if(obj.getType() === ObjectType.POINT) {
             this.drawPoint(obj as PointObject)
+        } else if(obj.getType() === ObjectType.POLYGON) {
+            this.drawPolygon(obj as PolygonObject)
         }
     }
 
@@ -94,15 +96,26 @@ export class Drawer {
         this.gl.drawArrays(this.gl.POINTS, 0, 1)
     }
 
-    public drawTriangle(vertices: number[]) {
-        console.log("triangle");
-        
+    public drawTriangle(
+        point1: Vertex,
+        point2: Vertex,
+        point3: Vertex,
+        color: number[],
+        projectionMatrix: number[],
+    ) {
         this.gl.useProgram(this.shaderProgram)
 
         // Create buffer
         const buffer = this.gl.createBuffer() as WebGLBuffer
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer)
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW)
+        this.gl.bufferData(this.gl.ARRAY_BUFFER,
+            new Float32Array([
+                point1.x, point1.y,
+                point2.x, point2.y,
+                point3.x, point3.y
+            ]),
+            this.gl.STATIC_DRAW
+        )
     
         const vertexPosition = this.gl.getAttribLocation(
             this.shaderProgram,
@@ -121,13 +134,30 @@ export class Drawer {
         this.gl.uniformMatrix3fv(
             projectionLocation,
             false,
-            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+            projectionMatrix
         );
 
         this.gl.vertexAttribPointer(vertexPosition, 2, this.gl.FLOAT, false, 0, 0)
-        this.gl.uniform4fv(uniformCol, [1.0, 0.0, 0.0, .75]) // This will produce red color (in RGBA 1,0,0,1 is red)
+        this.gl.uniform4fv(uniformCol, color) // This will produce red color (in RGBA 1,0,0,1 is red)
         this.gl.enableVertexAttribArray(vertexPosition)
         this.gl.drawArrays(this.gl.TRIANGLES, 0, 3)
     }
-}
 
+    public drawPolygon(obj: PolygonObject) {
+        this.gl.useProgram(this.shaderProgram)
+
+        for (let i = 1; i < obj.getPoints().length-1; i++) {
+            this.drawTriangle(
+                {x: obj.getPoints()[0].x, y: obj.getPoints()[0].y},
+                {x: obj.getPoints()[i].x, y: obj.getPoints()[i].y},
+                {x: obj.getPoints()[i+1].x, y: obj.getPoints()[i+1].y},
+                obj.getColor(),
+                obj.getProjectionMatrix()
+            )
+        }
+    }
+
+    public clearPoints() {
+        this.objects = this.objects.filter((obj) => obj.getType() !== ObjectType.POINT)
+    }
+}

@@ -44,3 +44,17 @@ export class PointObject extends BaseObject {
         return this.vertex
     }
 }
+
+export class PolygonObject extends BaseObject {
+    private points: Array<Vertex>;
+
+    constructor(points: Array<Vertex>) {
+        super()
+        this.type = ObjectType.POLYGON
+        this.points = points
+    }
+
+    public getPoints() {
+        return this.points
+    }
+}

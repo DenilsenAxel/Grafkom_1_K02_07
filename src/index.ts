@@ -2,17 +2,17 @@ import "./styles.css"
 import VertexShader from './shaders/VertexShader.glsl'
 import FragmentShader from './shaders/FragmentShader.glsl'
 import { Drawer } from './core/Drawer'
-import { ObjectType, State } from "./types/interfaces";
+import { ObjectType, State, Vertex } from "./types/interfaces";
 import { convertPosToClip } from "./utils/Utils";
-import { PointObject } from "./core/Objects";
+import { PointObject, PolygonObject } from "./core/Objects";
 
 let drawer: Drawer | null = null
 let isDrawing: Boolean = false;
 let mousePos: [number, number] = [0,0]
 let state: State = State.SELECTING
+let vertices: Array<Vertex> = []
 let objectType: ObjectType | null = null
 let maxVertex = -1
-let countVertex = 0
 
 function main(): void {
     const canvas = document.querySelector('#glCanvas') as HTMLCanvasElement
@@ -95,7 +95,7 @@ function setDrawPoly() {
     setStateDraw()
     objectType = ObjectType.POLYGON
     setShapeBtnActive(objectType)
-    maxVertex = 999
+    maxVertex = 5
 }
 
 function setStateDraw() {
@@ -172,12 +172,18 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
     
     switch (objectType) {
         case ObjectType.POLYGON :
+            if(vertices.length === maxVertex-1) {
+                vertices.push({x, y})
+                let newPolygon = new PolygonObject(vertices)
+                vertices = []
+                drawer?.addObject(newPolygon)
+                drawer?.clearPoints()
+            } else {
+                vertices.push({x, y})
+                let newPoint = new PointObject(x, y)
+                drawer?.addObject(newPoint)
+            }
             break;
-    }
-    
-    let newPoint = new PointObject(x, y)
-    if(drawer) {
-        drawer.addObject(newPoint)
     }
 }
 
