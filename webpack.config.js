@@ -34,6 +34,10 @@ module.exports = {
                 test: /\.glsl$/,
                 include: SHADER_PATH,
                 loader: 'webpack-glsl-loader'
+            }, 
+            {
+                test: /\.css$/,
+                use: ["style-loader", "css-loader"],
             }
         ]
     },

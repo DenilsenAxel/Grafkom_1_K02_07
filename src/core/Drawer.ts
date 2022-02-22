@@ -1,9 +1,13 @@
+import { ObjectType, Vertex } from "../types/interfaces";
+import { BaseObject, PointObject } from "./Objects";
+
 export class Drawer {
     private canvas!: HTMLCanvasElement;
     private gl!: WebGL2RenderingContext;
     private vertexShader!: WebGLShader;
     private fragmentShader!: WebGLShader;
     private shaderProgram!: WebGLProgram;
+    private objects: Array<BaseObject> = []
 
     constructor(
         canvasElement: HTMLCanvasElement,
@@ -38,7 +42,61 @@ export class Drawer {
         return shader
     }
 
+    public addObject(obj: BaseObject) {
+        this.objects.push(obj)
+    }
+
+    public drawScene() {
+        for (let i = 0; i < this.objects.length; i++) {
+            const obj = this.objects[i];
+            this.drawObject(obj)
+        }
+    }
+
+    public drawObject(obj: BaseObject) {        
+        if(obj.getType() === ObjectType.POINT) {
+            this.drawPoint(obj as PointObject)
+        }
+    }
+
+    public drawPoint(obj: PointObject) {      
+        this.gl.useProgram(this.shaderProgram)
+        const points = [obj.getVertex().x, obj.getVertex().y]
+        const buffer = this.gl.createBuffer()
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer)
+        this.gl.bufferData(
+            this.gl.ARRAY_BUFFER,
+            new Float32Array(points),
+            this.gl.STATIC_DRAW
+        )
+
+        const vertexPosition = this.gl.getAttribLocation(
+            this.shaderProgram,
+            'aVertexPosition'
+        )
+        const uniformCol = this.gl.getUniformLocation(
+            this.shaderProgram, 
+            'uColor'
+        )
+        const projectionLocation = this.gl.getUniformLocation(
+            this.shaderProgram,
+            "uProjectionMatrix"
+        );
+
+        this.gl.vertexAttribPointer(vertexPosition, 2, this.gl.FLOAT, false, 0, 0)
+        this.gl.uniformMatrix3fv(
+            projectionLocation,
+            false,
+            obj.getProjectionMatrix()
+        );
+        this.gl.uniform4fv(uniformCol, obj.getColor())
+        this.gl.enableVertexAttribArray(vertexPosition)
+        this.gl.drawArrays(this.gl.POINTS, 0, 1)
+    }
+
     public drawTriangle(vertices: number[]) {
+        console.log("triangle");
+        
         this.gl.useProgram(this.shaderProgram)
 
         // Create buffer
@@ -54,6 +112,17 @@ export class Drawer {
             this.shaderProgram, 
             'uColor'
         )
+        const projectionLocation = this.gl.getUniformLocation(
+            this.shaderProgram,
+            "uProjectionMatrix"
+        );
+
+        this.gl.vertexAttribPointer(vertexPosition, 2, this.gl.FLOAT, false, 0, 0)
+        this.gl.uniformMatrix3fv(
+            projectionLocation,
+            false,
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+        );
 
         this.gl.vertexAttribPointer(vertexPosition, 2, this.gl.FLOAT, false, 0, 0)
         this.gl.uniform4fv(uniformCol, [1.0, 0.0, 0.0, .75]) // This will produce red color (in RGBA 1,0,0,1 is red)

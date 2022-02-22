@@ -5,9 +5,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebGL App</title>
-    <link rel="stylesheet" href="styles.css">
 </head>
-<body style="background-color: aqua;">
-    <canvas id="glCanvas"></canvas>
+<body>
+    <div id="root">
+        <div id="toolbar">
+            <h1 id="title">WebCAD</h1>
+
+            <p class="menu-title">Shapes :</p>
+            <div class="btn-container">
+                <button id="line-btn">LINE</button>
+                <button id="square-btn">SQUARE</button>
+                <button id="rectangle-btn">RECTANGLE</button>
+                <button id="polygon-btn">POLYGON</button>
+            </div>
+        </div>
+        <canvas id="glCanvas"></canvas>
+    </div>
 </body>
 </html>
