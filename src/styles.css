@@ -18,9 +18,10 @@ body {
 }
 
 #toolbar {
-    flex: 1;
+    width: 30%;
     padding: 1em;
     border-right: 3px solid gray;
+    overflow-y: scroll;
 }
 
 #title {
