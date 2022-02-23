@@ -21,6 +21,4 @@ export const convertPosToClip = (x: number, y: number, bounding: DOMRect) => {
     }
 }
 
-export const createIdentityMatrix = () => {
-    return [1, 0, 0, 0, 1, 0, 0, 0, 1];
-};
+export const IdentityMatrix = [1, 0, 0, 0, 1, 0, 0, 0, 1]

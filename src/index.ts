@@ -7,7 +7,6 @@ import { convertPosToClip } from './utils/Utils';
 import { PointObject, LineObject, PolygonObject } from './core/Objects';
 
 let drawer: Drawer | null = null;
-let isDrawing: Boolean = false;
 let mousePos: [number, number] = [0, 0];
 let state: State = State.SELECTING;
 let vertices: Array<Vertex> = [];
@@ -45,6 +44,9 @@ function setupUI(): void {
     const drawBtn = document.getElementById('draw-btn');
     const moveBtn = document.getElementById('move-btn');
     const transformBtn = document.getElementById('transform-btn');
+    const resetBtn = document.getElementById('reset-btn')
+
+    const verticesInput = document.getElementById('poly-vertices') as HTMLInputElement
 
     lineBtn?.addEventListener('click', () => {
         setDrawLine();
@@ -56,7 +58,7 @@ function setupUI(): void {
         setDrawRectangle();
     });
     polyBtn?.addEventListener('click', () => {
-        setDrawPoly();
+        setDrawPoly(parseInt(verticesInput.value));
     });
 
     drawBtn?.addEventListener('click', () => {
@@ -68,12 +70,20 @@ function setupUI(): void {
     transformBtn?.addEventListener('click', () => {
         setStateTransform();
     });
+    resetBtn?.addEventListener('click', () => {
+        drawer?.reset()
+    })
+
+    verticesInput.addEventListener('change', () => {
+        setDrawPoly(parseInt(verticesInput.value));
+    })
 }
 
 function setDrawLine() {
     setStateDraw();
     objectType = ObjectType.LINE;
     setShapeBtnActive(objectType);
+    resetVertices()
     maxVertex = 2;
 }
 
@@ -81,6 +91,7 @@ function setDrawSquare() {
     setStateDraw();
     objectType = ObjectType.SQUARE;
     setShapeBtnActive(objectType);
+    resetVertices()
     maxVertex = 2;
 }
 
@@ -88,14 +99,16 @@ function setDrawRectangle() {
     setStateDraw();
     objectType = ObjectType.RECTANGLE;
     setShapeBtnActive(objectType);
+    resetVertices()
     maxVertex = 2;
 }
 
-function setDrawPoly() {
+function setDrawPoly(num: number) {
     setStateDraw();
     objectType = ObjectType.POLYGON;
     setShapeBtnActive(objectType);
-    maxVertex = 5;
+    resetVertices()
+    maxVertex = num;
 }
 
 function setStateDraw() {
@@ -120,6 +133,8 @@ function setShapeBtnActive(objectType: ObjectType) {
     const rectangleBtn = document.getElementById('rectangle-btn');
     const polyBtn = document.getElementById('polygon-btn');
 
+    const verticesElement = document.getElementById('poly-input') as HTMLElement;
+
     lineBtn?.classList.remove('active');
     squareBtn?.classList.remove('active');
     rectangleBtn?.classList.remove('active');
@@ -128,15 +143,19 @@ function setShapeBtnActive(objectType: ObjectType) {
     switch (objectType) {
         case ObjectType.LINE:
             lineBtn?.classList.add('active');
+            verticesElement.style.display = 'none'
             break;
         case ObjectType.SQUARE:
             squareBtn?.classList.add('active');
+            verticesElement.style.display = 'none'
             break;
         case ObjectType.RECTANGLE:
             rectangleBtn?.classList.add('active');
+            verticesElement.style.display = 'none'
             break;
         case ObjectType.POLYGON:
             polyBtn?.classList.add('active');
+            verticesElement.style.display = 'block'
             break;
         default:
             break;
@@ -167,6 +186,11 @@ function setStateBtnActive(state: State) {
     }
 }
 
+function resetVertices() {
+    vertices = []
+    drawer?.clearPoints()
+}
+
 function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
     const bounding = canvas.getBoundingClientRect();
     let { x, y } = convertPosToClip(e.x, e.y, bounding);
@@ -188,14 +212,10 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
                 case ObjectType.RECTANGLE:
                     break;
                 case ObjectType.POLYGON:
-                    let newPolygon = new PolygonObject(vertices);
-                    drawer?.addObject(newPolygon);
-
+                    drawer?.addObject(new PolygonObject(vertices));
                     break;
             }
-
-            drawer?.clearPoints();
-            vertices = [];
+            resetVertices()
         }
     }
 }

@@ -139,7 +139,6 @@ export class Drawer {
         this.gl.vertexAttribPointer(vertexPosition, 2, this.gl.FLOAT, false, 0, 0);
         this.gl.uniformMatrix3fv(projectionLocation, false, projectionMatrix);
 
-        this.gl.vertexAttribPointer(vertexPosition, 2, this.gl.FLOAT, false, 0, 0);
         this.gl.uniform4fv(uniformCol, color); // This will produce red color (in RGBA 1,0,0,1 is red)
         this.gl.enableVertexAttribArray(vertexPosition);
         this.gl.drawArrays(this.gl.TRIANGLES, 0, 3);
@@ -161,5 +160,11 @@ export class Drawer {
 
     public clearPoints() {
         this.objects = this.objects.filter((obj) => obj.getType() !== ObjectType.POINT);
+    }
+
+    public reset() {
+        this.objects = []
+        this.gl.clearColor(1, 1, 1, 1);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     }
 }

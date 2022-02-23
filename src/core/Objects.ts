@@ -1,5 +1,5 @@
 import { ObjectType, Vertex } from '../types/interfaces';
-import { createIdentityMatrix } from '../utils/Utils';
+import { IdentityMatrix } from '../utils/Utils';
 
 export class BaseObject {
     protected type!: ObjectType;
@@ -7,7 +7,7 @@ export class BaseObject {
     protected color: number[];
 
     constructor() {
-        this.projectionMatrix = createIdentityMatrix();
+        this.projectionMatrix = IdentityMatrix;
         this.color = [1.0, 0.0, 0.0, 1.0]; // Red
     }
 
