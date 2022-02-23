@@ -8,6 +8,26 @@
 </head>
 <body>
     <div id="root">
+        <div id="help-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>Need Help?</h2>
+                </div>
+                <div class="modal-body">
+                    <p>Help goes here</p>
+                </div>
+                <div class="modal-footer">
+                    <h3>Developed By :</h3>
+                    <ul>
+                        <li>Denilsen Axel Candiasa - 13519059</li>
+                        <li>James Chandra - 13519078</li>
+                        <li>Nabila Hannania - 13519097</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <div id="toolbar">
             <h1 id="title">WebCAD</h1>
 
@@ -57,8 +77,11 @@
                 <label for="color-input" class="menu-title">Color :</label>
                 <input id="color-input" type="color">
             </div>
-            
-            <button id="reset-btn">RESET</button>
+
+            <div class="misc-btn-container">
+                <button id="reset-btn">RESET</button>
+                <button id="help-btn">HELP</button>
+            </div>
         </div>
         <canvas id="glCanvas"></canvas>
     </div>

@@ -22,6 +22,7 @@ function main(): void {
     drawer = new Drawer(canvas, VertexShader, FragmentShader);
 
     setupUI();
+    setupModal();
 
     canvas.addEventListener('click', (e) => {
         clickEvent(e, canvas);
@@ -83,6 +84,26 @@ function setupUI(): void {
     colorInput?.addEventListener('change', () => {
         color = convertColorString(colorInput.value);
     })
+}
+
+function setupModal() {
+    const modal = document.getElementById('help-modal') as HTMLElement;
+    const openModalBtn = document.getElementById('help-btn') as HTMLElement;
+    const closeBtn = document.getElementsByClassName('close')[0] as HTMLElement;
+
+    openModalBtn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
 }
 
 function setDrawLine() {
