@@ -20,7 +20,7 @@ body {
 #toolbar {
     flex: 1;
     padding: 1em;
-    border: 3px solid gray;
+    border-right: 3px solid gray;
 }
 
 #title {
@@ -54,6 +54,18 @@ button {
 
 input {
     padding: .5em 1em;
+}
+
+.transform-input-container {
+    display: grid;
+    align-items: center;
+    margin: .5em 0;
+}
+
+.color-input-container {
+    display: flex;
+    align-items: center;
+    gap: 1em;
 }
 
 #poly-input {

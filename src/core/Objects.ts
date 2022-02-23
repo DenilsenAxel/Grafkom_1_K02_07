@@ -6,9 +6,9 @@ export class BaseObject {
     protected projectionMatrix: number[];
     protected color: number[];
 
-    constructor() {
+    constructor(color: number[]) {
         this.projectionMatrix = IdentityMatrix;
-        this.color = [1.0, 0.0, 0.0, 1.0]; // Red
+        this.color = color
     }
 
     public getType() {
@@ -31,8 +31,8 @@ export class BaseObject {
 export class PointObject extends BaseObject {
     private vertex: Vertex;
 
-    constructor(x: number, y: number) {
-        super();
+    constructor(x: number, y: number, color: number[]) {
+        super(color);
         this.vertex = {
             x: x,
             y: y,
@@ -48,8 +48,8 @@ export class PointObject extends BaseObject {
 export class LineObject extends BaseObject {
     private points: Vertex[];
 
-    constructor(points: Vertex[]) {
-        super();
+    constructor(points: Vertex[], color: number[]) {
+        super(color);
         this.points = points;
         this.type = ObjectType.LINE;
     }
@@ -62,8 +62,8 @@ export class LineObject extends BaseObject {
 export class PolygonObject extends BaseObject {
     private points: Array<Vertex>;
 
-    constructor(points: Array<Vertex>) {
-        super();
+    constructor(points: Array<Vertex>, color: number[]) {
+        super(color);
         this.type = ObjectType.POLYGON;
         this.points = points;
     }

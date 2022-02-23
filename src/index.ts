@@ -3,13 +3,14 @@ import VertexShader from './shaders/VertexShader.glsl';
 import FragmentShader from './shaders/FragmentShader.glsl';
 import { Drawer } from './core/Drawer';
 import { ObjectType, State, Vertex } from './types/interfaces';
-import { convertPosToClip } from './utils/Utils';
+import { convertColorString, convertPosToClip } from './utils/Utils';
 import { PointObject, LineObject, PolygonObject } from './core/Objects';
 
 let drawer: Drawer | null = null;
 let mousePos: [number, number] = [0, 0];
 let state: State = State.SELECTING;
 let vertices: Array<Vertex> = [];
+let color: number[] = [1.0, 0.0, 0.0, 1.0];
 let objectType: ObjectType | null = null;
 let maxVertex = -1;
 
@@ -45,8 +46,10 @@ function setupUI(): void {
     const moveBtn = document.getElementById('move-btn');
     const transformBtn = document.getElementById('transform-btn');
     const resetBtn = document.getElementById('reset-btn')
+    
 
     const verticesInput = document.getElementById('poly-vertices') as HTMLInputElement
+    const colorInput = document.getElementById('color-input') as HTMLInputElement
 
     lineBtn?.addEventListener('click', () => {
         setDrawLine();
@@ -76,6 +79,9 @@ function setupUI(): void {
 
     verticesInput.addEventListener('change', () => {
         setDrawPoly(parseInt(verticesInput.value));
+    })
+    colorInput?.addEventListener('change', () => {
+        color = convertColorString(colorInput.value);
     })
 }
 
@@ -199,20 +205,20 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
         let vertex: Vertex = { x, y };
         vertices.push(vertex);
 
-        let point: PointObject = new PointObject(x, y);
+        let point: PointObject = new PointObject(x, y, color);
         drawer?.addObject(point);
 
         if (vertices.length === maxVertex) {
             switch (objectType) {
                 case ObjectType.LINE:
-                    drawer?.addObject(new LineObject(vertices));
+                    drawer?.addObject(new LineObject(vertices, color));
                     break;
                 case ObjectType.SQUARE:
                     break;
                 case ObjectType.RECTANGLE:
                     break;
                 case ObjectType.POLYGON:
-                    drawer?.addObject(new PolygonObject(vertices));
+                    drawer?.addObject(new PolygonObject(vertices, color));
                     break;
             }
             resetVertices()
