@@ -2,18 +2,17 @@ import './styles.css';
 import VertexShader from './shaders/VertexShader.glsl';
 import FragmentShader from './shaders/FragmentShader.glsl';
 import { Drawer } from './core/Drawer';
-import { ObjectType, State } from './types/interfaces';
+import { ObjectType, State, Vertex } from './types/interfaces';
 import { convertPosToClip } from './utils/Utils';
-import { LineObject, PointObject } from './core/Objects';
+import { PointObject, LineObject, PolygonObject } from './core/Objects';
 
 let drawer: Drawer | null = null;
 let isDrawing: Boolean = false;
 let mousePos: [number, number] = [0, 0];
 let state: State = State.SELECTING;
+let vertices: Array<Vertex> = [];
 let objectType: ObjectType | null = null;
 let maxVertex = -1;
-let countVertex = 0;
-let pointArray: PointObject[] = [];
 
 function main(): void {
     const canvas = document.querySelector('#glCanvas') as HTMLCanvasElement;
@@ -96,12 +95,13 @@ function setDrawPoly() {
     setStateDraw();
     objectType = ObjectType.POLYGON;
     setShapeBtnActive(objectType);
-    maxVertex = 999;
+    maxVertex = 5;
 }
 
 function setStateDraw() {
     state = State.DRAWING;
     setStateBtnActive(State.DRAWING);
+    vertices = [];
 }
 
 function setStateMove() {
@@ -172,28 +172,30 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
     let { x, y } = convertPosToClip(e.x, e.y, bounding);
 
     if (state === State.DRAWING) {
-        let point = new PointObject(x, y);
-        pointArray.push(point);
+        let vertex: Vertex = { x, y };
+        vertices.push(vertex);
 
-        countVertex++;
+        let point: PointObject = new PointObject(x, y);
+        drawer?.addObject(point);
 
-        if (countVertex === maxVertex) {
+        if (vertices.length === maxVertex) {
             switch (objectType) {
-                case ObjectType.POINT:
-                    drawer?.addObject(point);
-                    break;
                 case ObjectType.LINE:
-                    drawer?.addObject(new LineObject(pointArray));
+                    drawer?.addObject(new LineObject(vertices));
                     break;
                 case ObjectType.SQUARE:
                     break;
                 case ObjectType.RECTANGLE:
                     break;
                 case ObjectType.POLYGON:
+                    let newPolygon = new PolygonObject(vertices);
+                    drawer?.addObject(newPolygon);
+
                     break;
             }
-            pointArray = [];
-            countVertex = 0;
+
+            drawer?.clearPoints();
+            vertices = [];
         }
     }
 }

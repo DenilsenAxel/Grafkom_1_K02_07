@@ -46,14 +46,26 @@ export class PointObject extends BaseObject {
 }
 
 export class LineObject extends BaseObject {
-    private points: PointObject[];
+    private points: Vertex[];
 
-    constructor(pointArray: PointObject[]) {
+    constructor(points: Vertex[]) {
         super();
-        this.points = {
-            ...pointArray,
-        };
+        this.points = points;
         this.type = ObjectType.LINE;
+    }
+
+    public getPoints() {
+        return this.points;
+    }
+}
+
+export class PolygonObject extends BaseObject {
+    private points: Array<Vertex>;
+
+    constructor(points: Array<Vertex>) {
+        super();
+        this.type = ObjectType.POLYGON;
+        this.points = points;
     }
 
     public getPoints() {

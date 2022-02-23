@@ -1,5 +1,5 @@
 import { ObjectType, Vertex } from '../types/interfaces';
-import { BaseObject, LineObject, PointObject } from './Objects';
+import { BaseObject, PointObject, LineObject, PolygonObject } from './Objects';
 
 export class Drawer {
     private canvas!: HTMLCanvasElement;
@@ -58,6 +58,8 @@ export class Drawer {
             this.drawPoint(obj as PointObject);
         } else if (obj.getType() === ObjectType.LINE) {
             this.drawLine(obj as LineObject);
+        } else if (obj.getType() === ObjectType.POLYGON) {
+            this.drawPolygon(obj as PolygonObject);
         }
     }
 
@@ -85,10 +87,10 @@ export class Drawer {
     public drawLine(obj: LineObject) {
         this.gl.useProgram(this.shaderProgram);
         const points = [
-            obj.getPoints()[0].getVertex().x,
-            obj.getPoints()[0].getVertex().y,
-            obj.getPoints()[1].getVertex().x,
-            obj.getPoints()[1].getVertex().y,
+            obj.getPoints()[0].x,
+            obj.getPoints()[0].y,
+            obj.getPoints()[1].x,
+            obj.getPoints()[1].y,
         ];
         const buffer = this.gl.createBuffer() as WebGLBuffer;
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
@@ -109,15 +111,23 @@ export class Drawer {
         this.gl.drawArrays(this.gl.LINES, 0, 2);
     }
 
-    public drawTriangle(vertices: number[]) {
-        console.log('triangle');
-
+    public drawTriangle(
+        point1: Vertex,
+        point2: Vertex,
+        point3: Vertex,
+        color: number[],
+        projectionMatrix: number[]
+    ) {
         this.gl.useProgram(this.shaderProgram);
 
         // Create buffer
         const buffer = this.gl.createBuffer() as WebGLBuffer;
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
+        this.gl.bufferData(
+            this.gl.ARRAY_BUFFER,
+            new Float32Array([point1.x, point1.y, point2.x, point2.y, point3.x, point3.y]),
+            this.gl.STATIC_DRAW
+        );
 
         const vertexPosition = this.gl.getAttribLocation(this.shaderProgram, 'aVertexPosition');
         const uniformCol = this.gl.getUniformLocation(this.shaderProgram, 'uColor');
@@ -127,13 +137,29 @@ export class Drawer {
         );
 
         this.gl.vertexAttribPointer(vertexPosition, 2, this.gl.FLOAT, false, 0, 0);
-        this.gl.uniformMatrix3fv(projectionLocation, false, [1, 0, 0, 0, 1, 0, 0, 0, 1]);
+        this.gl.uniformMatrix3fv(projectionLocation, false, projectionMatrix);
 
         this.gl.vertexAttribPointer(vertexPosition, 2, this.gl.FLOAT, false, 0, 0);
-        this.gl.uniform4fv(uniformCol, [1.0, 0.0, 0.0, 0.75]); // This will produce red color (in RGBA 1,0,0,1 is red)
+        this.gl.uniform4fv(uniformCol, color); // This will produce red color (in RGBA 1,0,0,1 is red)
         this.gl.enableVertexAttribArray(vertexPosition);
         this.gl.drawArrays(this.gl.TRIANGLES, 0, 3);
     }
 
-    // method to select a line
+    public drawPolygon(obj: PolygonObject) {
+        this.gl.useProgram(this.shaderProgram);
+
+        for (let i = 1; i < obj.getPoints().length - 1; i++) {
+            this.drawTriangle(
+                { x: obj.getPoints()[0].x, y: obj.getPoints()[0].y },
+                { x: obj.getPoints()[i].x, y: obj.getPoints()[i].y },
+                { x: obj.getPoints()[i + 1].x, y: obj.getPoints()[i + 1].y },
+                obj.getColor(),
+                obj.getProjectionMatrix()
+            );
+        }
+    }
+
+    public clearPoints() {
+        this.objects = this.objects.filter((obj) => obj.getType() !== ObjectType.POINT);
+    }
 }
