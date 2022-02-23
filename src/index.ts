@@ -1,36 +1,37 @@
-import "./styles.css"
-import VertexShader from './shaders/VertexShader.glsl'
-import FragmentShader from './shaders/FragmentShader.glsl'
-import { Drawer } from './core/Drawer'
-import { ObjectType, State } from "./types/interfaces";
-import { convertPosToClip } from "./utils/Utils";
-import { PointObject } from "./core/Objects";
+import './styles.css';
+import VertexShader from './shaders/VertexShader.glsl';
+import FragmentShader from './shaders/FragmentShader.glsl';
+import { Drawer } from './core/Drawer';
+import { ObjectType, State } from './types/interfaces';
+import { convertPosToClip } from './utils/Utils';
+import { LineObject, PointObject } from './core/Objects';
 
-let drawer: Drawer | null = null
+let drawer: Drawer | null = null;
 let isDrawing: Boolean = false;
-let mousePos: [number, number] = [0,0]
-let state: State = State.SELECTING
-let objectType: ObjectType | null = null
-let maxVertex = -1
-let countVertex = 0
+let mousePos: [number, number] = [0, 0];
+let state: State = State.SELECTING;
+let objectType: ObjectType | null = null;
+let maxVertex = -1;
+let countVertex = 0;
+let pointArray: PointObject[] = [];
 
 function main(): void {
-    const canvas = document.querySelector('#glCanvas') as HTMLCanvasElement
-    canvas.width = 800
-    canvas.height = 600
+    const canvas = document.querySelector('#glCanvas') as HTMLCanvasElement;
+    canvas.width = 800;
+    canvas.height = 600;
 
-    drawer = new Drawer(canvas, VertexShader, FragmentShader)
+    drawer = new Drawer(canvas, VertexShader, FragmentShader);
 
-    setupUI()
+    setupUI();
 
     canvas.addEventListener('click', (e) => {
-        clickEvent(e, canvas)
-    })
+        clickEvent(e, canvas);
+    });
 
     const requestAnimationFunction = (time: number) => {
         time *= 0.0001;
-        if(drawer) {
-            drawer.drawScene()
+        if (drawer) {
+            drawer.drawScene();
         }
         window.requestAnimationFrame(requestAnimationFunction);
     };
@@ -38,128 +39,128 @@ function main(): void {
 }
 
 function setupUI(): void {
-    const lineBtn = document.getElementById("line-btn")
-    const squareBtn = document.getElementById("square-btn")
-    const rectangleBtn = document.getElementById("rectangle-btn")
-    const polyBtn = document.getElementById("polygon-btn")
-    const drawBtn = document.getElementById("draw-btn")
-    const moveBtn = document.getElementById("move-btn")
-    const transformBtn = document.getElementById("transform-btn")
+    const lineBtn = document.getElementById('line-btn');
+    const squareBtn = document.getElementById('square-btn');
+    const rectangleBtn = document.getElementById('rectangle-btn');
+    const polyBtn = document.getElementById('polygon-btn');
+    const drawBtn = document.getElementById('draw-btn');
+    const moveBtn = document.getElementById('move-btn');
+    const transformBtn = document.getElementById('transform-btn');
 
     lineBtn?.addEventListener('click', () => {
-        setDrawLine()
-    })
+        setDrawLine();
+    });
     squareBtn?.addEventListener('click', () => {
-        setDrawSquare()
-    })
+        setDrawSquare();
+    });
     rectangleBtn?.addEventListener('click', () => {
-        setDrawRectangle()
-    })
+        setDrawRectangle();
+    });
     polyBtn?.addEventListener('click', () => {
-        setDrawPoly()
-    })
+        setDrawPoly();
+    });
 
     drawBtn?.addEventListener('click', () => {
-        setStateDraw()
-    })
+        setStateDraw();
+    });
     moveBtn?.addEventListener('click', () => {
-        setStateMove()
-    })
+        setStateMove();
+    });
     transformBtn?.addEventListener('click', () => {
-        setStateTransform()
-    })
+        setStateTransform();
+    });
 }
 
 function setDrawLine() {
-    setStateDraw()
-    objectType = ObjectType.LINE
-    setShapeBtnActive(objectType)
-    maxVertex = 2
+    setStateDraw();
+    objectType = ObjectType.LINE;
+    setShapeBtnActive(objectType);
+    maxVertex = 2;
 }
 
 function setDrawSquare() {
-    setStateDraw()
-    objectType = ObjectType.SQUARE
-    setShapeBtnActive(objectType)
-    maxVertex = 2
+    setStateDraw();
+    objectType = ObjectType.SQUARE;
+    setShapeBtnActive(objectType);
+    maxVertex = 2;
 }
 
 function setDrawRectangle() {
-    setStateDraw()
-    objectType = ObjectType.RECTANGLE
-    setShapeBtnActive(objectType)
-    maxVertex = 2
+    setStateDraw();
+    objectType = ObjectType.RECTANGLE;
+    setShapeBtnActive(objectType);
+    maxVertex = 2;
 }
 
 function setDrawPoly() {
-    setStateDraw()
-    objectType = ObjectType.POLYGON
-    setShapeBtnActive(objectType)
-    maxVertex = 999
+    setStateDraw();
+    objectType = ObjectType.POLYGON;
+    setShapeBtnActive(objectType);
+    maxVertex = 999;
 }
 
 function setStateDraw() {
-    state = State.DRAWING
-    setStateBtnActive(State.DRAWING)
+    state = State.DRAWING;
+    setStateBtnActive(State.DRAWING);
 }
 
 function setStateMove() {
-    state = State.MOVING
-    setStateBtnActive(State.MOVING)
+    state = State.MOVING;
+    setStateBtnActive(State.MOVING);
 }
 
 function setStateTransform() {
-    state = State.TRANSFORM
-    setStateBtnActive(State.TRANSFORM)
+    state = State.TRANSFORM;
+    setStateBtnActive(State.TRANSFORM);
 }
 
 function setShapeBtnActive(objectType: ObjectType) {
-    const lineBtn = document.getElementById("line-btn")
-    const squareBtn = document.getElementById("square-btn")
-    const rectangleBtn = document.getElementById("rectangle-btn")
-    const polyBtn = document.getElementById("polygon-btn")
+    const lineBtn = document.getElementById('line-btn');
+    const squareBtn = document.getElementById('square-btn');
+    const rectangleBtn = document.getElementById('rectangle-btn');
+    const polyBtn = document.getElementById('polygon-btn');
 
-    lineBtn?.classList.remove("active")
-    squareBtn?.classList.remove("active")
-    rectangleBtn?.classList.remove("active")
-    polyBtn?.classList.remove("active")
+    lineBtn?.classList.remove('active');
+    squareBtn?.classList.remove('active');
+    rectangleBtn?.classList.remove('active');
+    polyBtn?.classList.remove('active');
 
-    switch(objectType) {
-        case ObjectType.LINE :
-            lineBtn?.classList.add("active")
+    switch (objectType) {
+        case ObjectType.LINE:
+            lineBtn?.classList.add('active');
             break;
-        case ObjectType.SQUARE :
-            squareBtn?.classList.add("active")
+        case ObjectType.SQUARE:
+            squareBtn?.classList.add('active');
             break;
-        case ObjectType.RECTANGLE :
-            rectangleBtn?.classList.add("active")
+        case ObjectType.RECTANGLE:
+            rectangleBtn?.classList.add('active');
             break;
-        case ObjectType.POLYGON :
-            polyBtn?.classList.add("active")
-            break;    
+        case ObjectType.POLYGON:
+            polyBtn?.classList.add('active');
+            break;
         default:
             break;
     }
 }
 
 function setStateBtnActive(state: State) {
-    const drawBtn = document.getElementById("draw-btn")
-    const moveBtn = document.getElementById("move-btn")
-    const transformBtn = document.getElementById("transform-btn")
+    const drawBtn = document.getElementById('draw-btn');
+    const moveBtn = document.getElementById('move-btn');
+    const transformBtn = document.getElementById('transform-btn');
 
-    drawBtn?.classList.remove("active")
-    moveBtn?.classList.remove("active")
-    transformBtn?.classList.remove("active")
+    drawBtn?.classList.remove('active');
+    moveBtn?.classList.remove('active');
+    transformBtn?.classList.remove('active');
 
-    switch(state) {
+    switch (state) {
         case State.DRAWING:
-            drawBtn?.classList.add("active")
+            drawBtn?.classList.add('active');
             break;
         case State.MOVING:
-            moveBtn?.classList.add("active")
+            moveBtn?.classList.add('active');
             break;
         case State.TRANSFORM:
-            transformBtn?.classList.add("active")
+            transformBtn?.classList.add('active');
             break;
         default:
             break;
@@ -167,18 +168,34 @@ function setStateBtnActive(state: State) {
 }
 
 function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
-    const bounding = canvas.getBoundingClientRect()
-    let {x, y} = convertPosToClip(e.x, e.y, bounding)
-    
-    switch (objectType) {
-        case ObjectType.POLYGON :
-            break;
-    }
-    
-    let newPoint = new PointObject(x, y)
-    if(drawer) {
-        drawer.addObject(newPoint)
+    const bounding = canvas.getBoundingClientRect();
+    let { x, y } = convertPosToClip(e.x, e.y, bounding);
+
+    if (state === State.DRAWING) {
+        let point = new PointObject(x, y);
+        pointArray.push(point);
+
+        countVertex++;
+
+        if (countVertex === maxVertex) {
+            switch (objectType) {
+                case ObjectType.POINT:
+                    drawer?.addObject(point);
+                    break;
+                case ObjectType.LINE:
+                    drawer?.addObject(new LineObject(pointArray));
+                    break;
+                case ObjectType.SQUARE:
+                    break;
+                case ObjectType.RECTANGLE:
+                    break;
+                case ObjectType.POLYGON:
+                    break;
+            }
+            pointArray = [];
+            countVertex = 0;
+        }
     }
 }
 
-window.onload = main
+window.onload = main;
