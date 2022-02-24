@@ -26,6 +26,10 @@ export class BaseObject {
     public getProjectionMatrix() {
         return this.projectionMatrix;
     }
+
+    public setProjectionMatrix(projMat: number[]) {
+        this.projectionMatrix = projMat;
+    }
 }
 
 export class PointObject extends BaseObject {
@@ -56,6 +60,40 @@ export class LineObject extends BaseObject {
 
     public getPoints() {
         return this.points;
+    }
+}
+
+export class SquareObject extends BaseObject {
+    private center: Vertex;
+    private size: number;
+
+    constructor(points: Array<Vertex>, size : number, color: number[]) {
+        super(color);
+        this.type = ObjectType.SQUARE
+        this.center = points[0]
+        this.size = size
+    }
+
+    public getCenter() {
+        return this.center
+    }
+
+    public getSize() {
+        return this.size
+    }
+}
+
+export class RectangleObject extends BaseObject {
+    private points: Array<Vertex>;
+
+    constructor(points: Array<Vertex>, color: number[]) {
+        super(color)
+        this.type = ObjectType.RECTANGLE
+        this.points = points
+    }
+
+    public getPoints() {
+        return this.points
     }
 }
 

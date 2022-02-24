@@ -1,5 +1,6 @@
 import { ObjectType, Vertex } from '../types/interfaces';
-import { BaseObject, PointObject, LineObject, PolygonObject } from './Objects';
+import { multiplyMatrix} from "../utils/Utils";
+import { BaseObject, PointObject, LineObject, PolygonObject, SquareObject, RectangleObject } from './Objects';
 
 export class Drawer {
     private canvas!: HTMLCanvasElement;
@@ -58,6 +59,10 @@ export class Drawer {
             this.drawPoint(obj as PointObject);
         } else if (obj.getType() === ObjectType.LINE) {
             this.drawLine(obj as LineObject);
+        } else if(obj.getType() === ObjectType.SQUARE) {
+            this.drawSquare(obj as SquareObject)
+        } else if(obj.getType() === ObjectType.RECTANGLE) {
+            this.drawRectangle(obj as RectangleObject)
         } else if (obj.getType() === ObjectType.POLYGON) {
             this.drawPolygon(obj as PolygonObject);
         }
@@ -109,6 +114,114 @@ export class Drawer {
         this.gl.enableVertexAttribArray(vertexPosition);
 
         this.gl.drawArrays(this.gl.LINES, 0, 2);
+    }
+
+    public drawSquare(obj: SquareObject) {
+        this.gl.useProgram(this.shaderProgram)
+
+        const buffer = this.gl.createBuffer()
+        const x1 = obj.getCenter().x + obj.getSize()/this.canvas.width
+        const x2 = obj.getCenter().x - obj.getSize()/this.canvas.width
+        const y1 = obj.getCenter().y + obj.getSize()/this.canvas.height
+        const y2 = obj.getCenter().y - obj.getSize()/this.canvas.height
+        
+        const vertices  = new Float32Array([
+            x1, y1, 
+            x2, y1, 
+            x1, y2, 
+            x1, y2, 
+            x2, y1, 
+            x2, y2])
+
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer) 
+        this.gl.bufferData(
+            this.gl.ARRAY_BUFFER,
+            vertices,
+            this.gl.STATIC_DRAW
+          )
+        const positionLocation  = this.gl.getAttribLocation(
+            this.shaderProgram,
+            "aVertexPosition"
+        )
+        this.gl.enableVertexAttribArray(positionLocation )
+        this.gl.vertexAttribPointer(positionLocation , 2, this.gl.FLOAT, false, 0, 0)
+        
+        const projectionLocation = this.gl.getUniformLocation(
+            this.shaderProgram,
+            "uProjectionMatrix"
+        )
+        this.gl.uniformMatrix3fv(projectionLocation, false,obj.getProjectionMatrix())
+      
+          
+        const colorLocation = this.gl.getUniformLocation(
+            this.shaderProgram,
+            "uColor"
+        )
+        this.gl.uniform4fv(colorLocation, obj.getColor())
+
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
+
+    }
+
+    public drawRectangle(obj: RectangleObject) {
+        this.gl.useProgram(this.shaderProgram)
+
+        const buffer = this.gl.createBuffer()
+        const x1 = obj.getPoints()[0].x
+        const x2 = obj.getPoints()[1].x
+        const y1 = obj.getPoints()[0].y
+        const y2 = obj.getPoints()[1].y
+
+        const vertices  = new Float32Array([
+            x1, y1, 
+            x2, y1, 
+            x1, y2, 
+            x1, y2, 
+            x2, y1, 
+            x2, y2])
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer) 
+        this.gl.bufferData(
+            this.gl.ARRAY_BUFFER,
+            vertices,
+            this.gl.STATIC_DRAW
+          )
+        const positionLocation  = this.gl.getAttribLocation(
+            this.shaderProgram,
+            "aVertexPosition"
+        )
+        this.gl.enableVertexAttribArray(positionLocation )
+        this.gl.vertexAttribPointer(positionLocation , 2, this.gl.FLOAT, false, 0, 0)
+        
+        const projectionLocation = this.gl.getUniformLocation(
+            this.shaderProgram,
+            "uProjectionMatrix"
+        )
+        this.gl.uniformMatrix3fv(projectionLocation, false,obj.getProjectionMatrix())
+      
+          
+        const colorLocation = this.gl.getUniformLocation(
+            this.shaderProgram,
+            "uColor"
+        )
+        this.gl.uniform4fv(colorLocation, obj.getColor())
+
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
+    }
+
+    public setTransformObject(obj: SquareObject, sx: number, sy: number){
+        const [k1, k2] = [sx,sy]
+        const scaleMatrix = [
+        k1, 0, 0,
+        0, k2, 0,
+        0, 0, 1
+        ]
+        const scaleResult = multiplyMatrix(obj.getProjectionMatrix(), scaleMatrix)
+        //console.log(result);
+        obj.setProjectionMatrix(scaleResult)
+        this.drawScene();
+        //console.log(obj.getProjectionMatrix());
     }
 
     public drawTriangle(

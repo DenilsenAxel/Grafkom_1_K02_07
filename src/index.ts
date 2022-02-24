@@ -4,7 +4,7 @@ import FragmentShader from './shaders/FragmentShader.glsl';
 import { Drawer } from './core/Drawer';
 import { ObjectType, State, Vertex } from './types/interfaces';
 import { convertColorString, convertPosToClip } from './utils/Utils';
-import { PointObject, LineObject, PolygonObject } from './core/Objects';
+import { PointObject, PolygonObject, LineObject, RectangleObject, SquareObject } from "./core/Objects";
 
 let drawer: Drawer | null = null;
 let mousePos: [number, number] = [0, 0];
@@ -119,7 +119,7 @@ function setDrawSquare() {
     objectType = ObjectType.SQUARE;
     setShapeBtnActive(objectType);
     resetVertices()
-    maxVertex = 2;
+    maxVertex = 1;
 }
 
 function setDrawRectangle() {
@@ -235,8 +235,10 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
                     drawer?.addObject(new LineObject(vertices, color));
                     break;
                 case ObjectType.SQUARE:
+                    drawer?.addObject(new SquareObject(vertices, 100, color));
                     break;
                 case ObjectType.RECTANGLE:
+                    drawer?.addObject(new RectangleObject(vertices, color));
                     break;
                 case ObjectType.POLYGON:
                     drawer?.addObject(new PolygonObject(vertices, color));
