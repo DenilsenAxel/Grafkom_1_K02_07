@@ -122,8 +122,8 @@ export class Drawer {
         const buffer = this.gl.createBuffer()
         const x1 = obj.getCenter().x + obj.getSize()/this.canvas.width
         const x2 = obj.getCenter().x - obj.getSize()/this.canvas.width
-        const y1 = obj.getCenter().y + obj.getSize()/this.canvas.height
-        const y2 = obj.getCenter().y - obj.getSize()/this.canvas.height
+        const y1 = obj.getCenter().y + (obj.getSize()+obj.getSize()/10)/this.canvas.height
+        const y2 = obj.getCenter().y - (obj.getSize()+obj.getSize()/10)/this.canvas.height
         
         const vertices  = new Float32Array([
             x1, y1, 
