@@ -57,6 +57,10 @@ export class LineObject extends BaseObject {
     public getPoints() {
         return this.points;
     }
+
+    public mutatePoints(newPoints: Vertex[]) {
+        this.points = newPoints;
+    }
 }
 
 export class PolygonObject extends BaseObject {
@@ -70,5 +74,9 @@ export class PolygonObject extends BaseObject {
 
     public getPoints() {
         return this.points;
+    }
+
+    public mutatePoints(newPoints: Array<Vertex>) {
+        this.points = newPoints;
     }
 }
