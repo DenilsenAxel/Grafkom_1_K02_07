@@ -63,6 +63,13 @@ input {
     margin: .5em 0;
 }
 
+#square-size-input {
+    margin: 1em 0;
+    display: grid;
+    display: none;
+    width: 50%;
+}
+
 .color-input-container {
     display: flex;
     align-items: center;

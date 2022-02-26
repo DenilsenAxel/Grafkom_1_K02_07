@@ -124,6 +124,13 @@ export class Drawer {
         const x2 = obj.getCenter().x - obj.getSize()/this.canvas.width
         const y1 = obj.getCenter().y + (obj.getSize()+obj.getSize()/10)/this.canvas.height
         const y2 = obj.getCenter().y - (obj.getSize()+obj.getSize()/10)/this.canvas.height
+
+        // console.log(x1,y1,x2,y2)
+
+        // const x1 = obj.getCenter().x + 0.5 * 1
+        // const x2 = obj.getCenter().x - 0.5 * 1
+        // const y1 = obj.getCenter().y + 0.5 * 1
+        // const y2 = obj.getCenter().y - 0.5 * 1
         
         const vertices  = new Float32Array([
             x1, y1, 
@@ -217,11 +224,12 @@ export class Drawer {
         0, k2, 0,
         0, 0, 1
         ]
+        console.log(obj.getProjectionMatrix());
         const scaleResult = multiplyMatrix(obj.getProjectionMatrix(), scaleMatrix)
-        //console.log(result);
+        console.log(scaleResult);
         obj.setProjectionMatrix(scaleResult)
         this.drawScene();
-        //console.log(obj.getProjectionMatrix());
+        console.log(obj.getProjectionMatrix());
     }
 
     public drawTriangle(

@@ -66,6 +66,8 @@ export class LineObject extends BaseObject {
 export class SquareObject extends BaseObject {
     private center: Vertex;
     private size: number;
+    private width: number = 800;
+    private height: number = 600;
 
     constructor(points: Array<Vertex>, size : number, color: number[]) {
         super(color);
@@ -81,6 +83,24 @@ export class SquareObject extends BaseObject {
     public getSize() {
         return this.size
     }
+
+    public getAllVertex(){
+        const x1 = this.center.x + this.size/this.width
+        const x2 = this.center.x - this.size/this.width
+        const y1 = this.center.y + (this.size + this.size/10)/this.height
+        const y2 = this.center.y - (this.size + this.size/10)/this.height
+
+        // const x1 = this.getCenter().x + 0.5 * this.getSize()
+        // const x2 = this.getCenter().x - 0.5 * this.getSize()
+        // const y1 = this.getCenter().y + 0.5 * this.getSize()
+        // const y2 = this.getCenter().y - 0.5 * this.getSize()
+
+        let squareVertex: Array<number> = []
+        squareVertex.push(x1, x2, y1, y2)
+
+        return squareVertex;
+    }
+
 }
 
 export class RectangleObject extends BaseObject {

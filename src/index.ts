@@ -46,7 +46,7 @@ function setupUI(): void {
     const drawBtn = document.getElementById('draw-btn');
     const moveBtn = document.getElementById('move-btn');
     const transformBtn = document.getElementById('transform-btn');
-    const resetBtn = document.getElementById('reset-btn')
+    const resetBtn = document.getElementById('reset-btn');
     
 
     const verticesInput = document.getElementById('poly-vertices') as HTMLInputElement
@@ -161,6 +161,7 @@ function setShapeBtnActive(objectType: ObjectType) {
     const polyBtn = document.getElementById('polygon-btn');
 
     const verticesElement = document.getElementById('poly-input') as HTMLElement;
+    const sizeInput = document.getElementById('square-size-input') as HTMLInputElement
 
     lineBtn?.classList.remove('active');
     squareBtn?.classList.remove('active');
@@ -171,18 +172,22 @@ function setShapeBtnActive(objectType: ObjectType) {
         case ObjectType.LINE:
             lineBtn?.classList.add('active');
             verticesElement.style.display = 'none'
+            sizeInput.style.display = 'none'
             break;
         case ObjectType.SQUARE:
             squareBtn?.classList.add('active');
             verticesElement.style.display = 'none'
+            sizeInput.style.display = 'block'
             break;
         case ObjectType.RECTANGLE:
             rectangleBtn?.classList.add('active');
             verticesElement.style.display = 'none'
+            sizeInput.style.display = 'none'
             break;
         case ObjectType.POLYGON:
             polyBtn?.classList.add('active');
             verticesElement.style.display = 'block'
+            sizeInput.style.display = 'none'
             break;
         default:
             break;
@@ -194,6 +199,8 @@ function setStateBtnActive(state: State) {
     const moveBtn = document.getElementById('move-btn');
     const transformBtn = document.getElementById('transform-btn');
 
+    const sizeInput = document.getElementById('square-size-input') as HTMLInputElement
+
     drawBtn?.classList.remove('active');
     moveBtn?.classList.remove('active');
     transformBtn?.classList.remove('active');
@@ -201,12 +208,15 @@ function setStateBtnActive(state: State) {
     switch (state) {
         case State.DRAWING:
             drawBtn?.classList.add('active');
+            sizeInput.style.display = 'block'
             break;
         case State.MOVING:
             moveBtn?.classList.add('active');
+            sizeInput.style.display = 'none'
             break;
         case State.TRANSFORM:
             transformBtn?.classList.add('active');
+            sizeInput.style.display = 'none'
             break;
         default:
             break;
@@ -228,6 +238,7 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
 
         let point: PointObject = new PointObject(x, y, color);
         drawer?.addObject(point);
+        const scaleInput = document.getElementById("square-size") as HTMLInputElement
 
         if (vertices.length === maxVertex) {
             switch (objectType) {
@@ -235,7 +246,7 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
                     drawer?.addObject(new LineObject(vertices, color));
                     break;
                 case ObjectType.SQUARE:
-                    drawer?.addObject(new SquareObject(vertices, 100, color));
+                    drawer?.addObject(new SquareObject(vertices, Number(scaleInput.value), color));
                     break;
                 case ObjectType.RECTANGLE:
                     drawer?.addObject(new RectangleObject(vertices, color));
@@ -246,6 +257,59 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
             }
             resetVertices()
         }
+    } else if (state == State.TRANSFORM) {
+        let value_sx = document.getElementById("scale-x-input") as HTMLInputElement
+        let value_sy = document.getElementById("scale-y-input") as HTMLInputElement
+
+        let objects = drawer!!.getObjects();
+        console.log(objects);
+
+        let object;
+
+        for (let i = 0; i <= objects.length; i++) {
+          if (i == objects.length) {
+            object = null;
+            break;
+          }
+          object = objects[i];
+          //If the object is square
+          if (object.getType() == ObjectType.SQUARE) {
+            const square = object as SquareObject;
+            //let squareVertex = square.getAllVertex()
+            const x1 = square.getCenter().x + square.getSize()/canvas.width
+            const x2 = square.getCenter().x - square.getSize()/canvas.width
+            const y1 = square.getCenter().y + (square.getSize()+square.getSize()/10)/canvas.height
+            const y2 = square.getCenter().y - (square.getSize()+square.getSize()/10)/canvas.height
+
+            //If point(x,y) inside square
+            // if (x >= squareVertex[1] && x <= squareVertex[0] && y >= squareVertex[3] && y <= squareVertex[2]) {
+            if (x >= x2 && x <= x1 && y >= y2 && y <= y1) {
+              console.log('poin didalem kotak');
+              break;
+            } else {
+              console.log('poin diluar kotak');
+            }
+            console.log(square.getCenter());
+          }
+          
+        }
+        if (object != null) {
+            // let translate_x = ((value_x - 0) * (1 - -1)) / (800 - 0) + -1;
+            // let translate_y = ((value_y - 0) * (1 - -1)) / (800 - 0) + -1;
+            let scale_sx = Number(value_sx.value)*2/800;
+            let scale_sy = Number(value_sx.value)*2/800;
+            // console.log(translate_x);
+            // console.log(translate_y);
+            // console.log(value_r);
+            // console.log(scale_sx);
+            // console.log(scale_sy);
+  
+            drawer!!.setTransformObject(
+              object as SquareObject,
+              scale_sx,
+              scale_sy
+            );
+          }
     }
 }
 
