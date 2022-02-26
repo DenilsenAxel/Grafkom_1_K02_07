@@ -204,3 +204,11 @@ input[type=file] {
 .modal-footer > ul {
     padding-left: 1.5em;
 }
+
+.modal-body > h4 {
+    margin-bottom: .25em;
+}
+
+ol > li {
+    margin-left: 1em;
+}
