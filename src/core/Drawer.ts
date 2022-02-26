@@ -47,6 +47,10 @@ export class Drawer {
         this.objects.push(obj);
     }
 
+    public replaceObjectAt(index: number, obj: BaseObject) {
+        this.objects[index] = obj;
+    }
+
     public drawScene() {
         for (let i = 0; i < this.objects.length; i++) {
             const obj = this.objects[i];
