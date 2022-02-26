@@ -5,6 +5,7 @@ import { Drawer } from './core/Drawer';
 import { ObjectType, State, Vertex } from './types/interfaces';
 import { convertColorString, convertPosToClip } from './utils/Utils';
 import { PointObject, PolygonObject, LineObject, RectangleObject, SquareObject } from "./core/Objects";
+import { loadFile, saveFile } from './utils/SaveLoad';
 
 let drawer: Drawer | null = null;
 let mousePos: [number, number] = [0, 0];
@@ -12,6 +13,7 @@ let state: State = State.SELECTING;
 let vertices: Array<Vertex> = [];
 let color: number[] = [1.0, 0.0, 0.0, 1.0];
 let objectType: ObjectType | null = null;
+let file: string = ""
 let maxVertex = -1;
 
 function main(): void {
@@ -48,6 +50,9 @@ function setupUI(): void {
     const transformBtn = document.getElementById('transform-btn');
     const resetBtn = document.getElementById('reset-btn');
     
+    const saveBtn = document.getElementById('save-btn')
+    const loadBtn = document.getElementById('load-btn')
+    const fileInput = document.getElementById('file-input')
 
     const verticesInput = document.getElementById('poly-vertices') as HTMLInputElement
     const colorInput = document.getElementById('color-input') as HTMLInputElement
@@ -78,11 +83,24 @@ function setupUI(): void {
         drawer?.reset()
     })
 
+    saveBtn?.addEventListener('click', () =>{
+        file = drawer?.exportObjects() as string;
+        saveFile(`${Date.now()}.json`, file)
+    })
+    loadBtn?.addEventListener('click', () => {
+        drawer?.importObjects(file)
+    })
+
     verticesInput.addEventListener('change', () => {
         setDrawPoly(parseInt(verticesInput.value));
     })
     colorInput?.addEventListener('change', () => {
         color = convertColorString(colorInput.value);
+    })
+    fileInput?.addEventListener('change', (e) => {
+        loadFile(e, (text: string) => {
+            file = text
+        })()
     })
 }
 

@@ -279,6 +279,35 @@ export class Drawer {
         }
     }
 
+    public importObjects(fileString: string) {
+        this.objects = []
+        console.log(fileString);
+        const objects = JSON.parse(fileString)
+        
+        for (let i = 0; i < objects.length; i++) {
+            const obj = objects[i]
+            if (obj.type === ObjectType.LINE) {
+                const line = new LineObject(obj.points, obj.color)
+                this.objects.push(line)
+            } else if (obj.type === ObjectType.SQUARE) {
+                const square = new SquareObject([
+                    {x: obj.center.x, y: obj.center.y}
+                ], obj.size, obj.color)
+                this.objects.push(square)
+            } else if (obj.type === ObjectType.RECTANGLE) {
+                const rect = new RectangleObject(obj.points, obj.color)
+                this.objects.push(rect)
+            } else if (obj.type === ObjectType.POLYGON) {
+                const poly = new PolygonObject(obj.points, obj.color)
+                this.objects.push(poly)
+            }
+        }
+    }
+
+    public exportObjects() {
+        return JSON.stringify(this.objects)
+    }
+
     public clearPoints() {
         this.objects = this.objects.filter((obj) => obj.getType() !== ObjectType.POINT);
     }

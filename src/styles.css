@@ -53,8 +53,12 @@ button {
     cursor: pointer;
 }
 
-input {
+input[type=number], input[type=range] {
     padding: .5em 1em;
+}
+
+input[type=file] {
+    margin: 1em 0;
 }
 
 .transform-input-container {
@@ -71,9 +75,16 @@ input {
 }
 
 .color-input-container {
+    margin: 1em 0;
     display: flex;
     align-items: center;
     gap: 1em;
+}
+
+.input-file-container {
+    margin-top: .5em;
+    display: flex;
+    flex-direction: column;
 }
 
 #poly-input {
@@ -81,22 +92,33 @@ input {
     display: none;
 }
 
-#reset-btn, #help-btn {
+#reset-btn, #help-btn, #save-btn, #load-btn {
     padding: 1em 3em;
+}
+
+#save-btn, #load-btn {
+    color: whitesmoke;
+    background-color: lightseagreen;
+    margin-top: 1em;
+    transition: all ease-in-out .25s;
 }
 
 #reset-btn {
     color: whitesmoke;
     background-color: red;
-    margin-top: 2em;
+    margin-top: 1em;
     transition: all ease-in-out .25s;
 }
 
 #help-btn {
     color: whitesmoke;
     background-color: lime;
-    margin-top: 2em;
+    margin-top: 1em;
     transition: all ease-in-out .25s;
+}
+
+#save-btn:hover, #load-btn:hover {
+    background-color: blue;
 }
 
 #help-btn:hover {
