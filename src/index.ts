@@ -4,11 +4,12 @@ import FragmentShader from './shaders/FragmentShader.glsl';
 import { Drawer } from './core/Drawer';
 import { ObjectType, State, Vertex } from './types/interfaces';
 import { convertPosToClip } from './utils/Utils';
-import { PointObject, LineObject, PolygonObject } from './core/Objects';
+import { PointObject, LineObject, PolygonObject, BaseObject } from './core/Objects';
 
 let drawer: Drawer | null = null;
 let isDrawing: Boolean = false;
 let mousePos: [number, number] = [0, 0];
+let isMouseClicked = false;
 let state: State = State.SELECTING;
 let vertices: Array<Vertex> = [];
 let objectType: ObjectType | null = null;
@@ -27,8 +28,23 @@ function main(): void {
         clickEvent(e, canvas);
     });
 
+    canvas.addEventListener(
+        'mousemove',
+        (e) => {
+            dragEvent(e, canvas);
+        },
+        false
+    );
+
+    canvas.addEventListener('mousedown', () => {
+        isMouseClicked = true;
+    });
+    canvas.addEventListener('mouseup', () => {
+        isMouseClicked = false;
+    });
+
     const requestAnimationFunction = (time: number) => {
-        time *= 0.0001;
+        time *= 0.1;
         if (drawer) {
             drawer.drawScene();
         }
@@ -196,6 +212,82 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
 
             drawer?.clearPoints();
             vertices = [];
+        }
+    }
+
+    console.log(drawer?.getObjects());
+}
+
+// calculate euclidean distance between two points
+function getEuclideanDistance(x1: number, y1: number, x2: number, y2: number) {
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}
+
+let closestObjectId = -1;
+let closestObjectPointId = -1;
+
+function dragEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
+    if (state === State.MOVING && isMouseClicked) {
+        // find the object that is closest to mouse position that is still within threshold
+        let threshold = 0.01;
+        let { x, y } = convertPosToClip(e.x, e.y, canvas.getBoundingClientRect());
+
+        let found = false;
+
+        drawer?.getObjects().forEach((object, id) => {
+            let currentId = id;
+            if (object.getType() === ObjectType.LINE) {
+                let line = object as LineObject;
+
+                line.getPoints().forEach((point, id) => {
+                    if (!found) {
+                        let distance = getEuclideanDistance(point.x, point.y, x, y);
+                        if (distance <= threshold) {
+                            closestObjectId = currentId;
+                            closestObjectPointId = id;
+                            found = true;
+                        }
+                    }
+                });
+            } else if (object.getType() === ObjectType.POLYGON) {
+                let polygon = object as PolygonObject;
+
+                polygon.getPoints().forEach((point, id) => {
+                    if (!found) {
+                        let distance = getEuclideanDistance(point.x, point.y, x, y);
+                        if (distance <= threshold) {
+                            closestObjectId = currentId;
+                            closestObjectPointId = id;
+                            found = true;
+                        }
+                    }
+                });
+            }
+        });
+
+        // if found, move the object
+        console.log(closestObjectId);
+        if (closestObjectId !== -1 && closestObjectPointId !== -1 && found) {
+            let object = drawer?.getObjects()[closestObjectId];
+            if (object) {
+                if (object.getType() === ObjectType.LINE) {
+                    let line = object as LineObject;
+                    let point = line.getPoints()[closestObjectPointId];
+                    point.x = x;
+                    point.y = y;
+
+                    drawer?.replaceObjectAt(closestObjectId, line);
+                } else if (object.getType() === ObjectType.POLYGON) {
+                    let polygon = object as PolygonObject;
+                    let point = polygon.getPoints()[closestObjectPointId];
+                    point.x = x;
+                    point.y = y;
+
+                    drawer?.replaceObjectAt(closestObjectId, polygon);
+                }
+            }
+            closestObjectId = -1;
+            closestObjectPointId = -1;
         }
     }
 }
