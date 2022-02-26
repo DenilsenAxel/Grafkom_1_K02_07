@@ -217,6 +217,16 @@ export class Drawer {
         this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
     }
 
+    public setScalingSqaure(obj: SquareObject, scale: number){
+        obj.setSize(scale)
+        this.drawScene();
+    }
+
+    public setColorPolygon(obj: PolygonObject, color: number[]){
+        obj.setColor(color)
+        this.drawScene();
+    }
+
     public setTransformObject(obj: SquareObject, sx: number, sy: number){
         const [k1, k2] = [sx,sy]
         const scaleMatrix = [

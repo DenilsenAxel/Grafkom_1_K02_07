@@ -84,6 +84,10 @@ export class SquareObject extends BaseObject {
         return this.size
     }
 
+    public setSize(size: number){
+        this.size = size
+    }
+
     public getAllVertex(){
         const x1 = this.center.x + this.size/this.width
         const x2 = this.center.x - this.size/this.width

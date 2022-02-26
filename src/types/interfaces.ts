@@ -7,7 +7,8 @@ export enum State {
     DRAWING,
     MOVING,
     TRANSFORM,
-    SELECTING
+    SELECTING,
+    COLOR
 }
 
 export enum ObjectType {

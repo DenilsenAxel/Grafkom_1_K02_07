@@ -46,6 +46,7 @@ function setupUI(): void {
     const drawBtn = document.getElementById('draw-btn');
     const moveBtn = document.getElementById('move-btn');
     const transformBtn = document.getElementById('transform-btn');
+    const colorBtn = document.getElementById('color-btn');
     const resetBtn = document.getElementById('reset-btn');
     
 
@@ -73,6 +74,9 @@ function setupUI(): void {
     });
     transformBtn?.addEventListener('click', () => {
         setStateTransform();
+    });
+    colorBtn?.addEventListener('click', () => {
+        setStateColor();
     });
     resetBtn?.addEventListener('click', () => {
         drawer?.reset()
@@ -154,6 +158,11 @@ function setStateTransform() {
     setStateBtnActive(State.TRANSFORM);
 }
 
+function setStateColor() {
+    state = State.COLOR;
+    setStateBtnActive(State.COLOR);
+}
+
 function setShapeBtnActive(objectType: ObjectType) {
     const lineBtn = document.getElementById('line-btn');
     const squareBtn = document.getElementById('square-btn');
@@ -198,12 +207,14 @@ function setStateBtnActive(state: State) {
     const drawBtn = document.getElementById('draw-btn');
     const moveBtn = document.getElementById('move-btn');
     const transformBtn = document.getElementById('transform-btn');
+    const colorBtn = document.getElementById('color-btn');
 
     const sizeInput = document.getElementById('square-size-input') as HTMLInputElement
 
     drawBtn?.classList.remove('active');
     moveBtn?.classList.remove('active');
     transformBtn?.classList.remove('active');
+    colorBtn?.classList.remove('active');
 
     switch (state) {
         case State.DRAWING:
@@ -218,6 +229,10 @@ function setStateBtnActive(state: State) {
             transformBtn?.classList.add('active');
             sizeInput.style.display = 'none'
             break;
+        case State.COLOR:
+            colorBtn?.classList.add('active');
+            sizeInput.style.display = 'none'
+            break;
         default:
             break;
     }
@@ -227,6 +242,24 @@ function resetVertices() {
     vertices = []
     drawer?.clearPoints()
 }
+
+
+function inside(point: Vertex, polygon: PolygonObject) {
+    var x = point.x, y = point.y;
+    
+    var inside = false;
+    let polyVertex = polygon.getPoints()
+    for (var i = 0, j = polyVertex.length - 1; i < polyVertex.length; j = i++) {
+        var xi = polyVertex[i].x, yi = polyVertex[i].y;
+        var xj = polyVertex[j].x, yj = polyVertex[j].y;
+        
+        var intersect = ((yi > y) != (yj > y))
+            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    
+    return inside;
+};
 
 function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
     const bounding = canvas.getBoundingClientRect();
@@ -258,8 +291,7 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
             resetVertices()
         }
     } else if (state == State.TRANSFORM) {
-        let value_sx = document.getElementById("scale-x-input") as HTMLInputElement
-        let value_sy = document.getElementById("scale-y-input") as HTMLInputElement
+        let value_scale = document.getElementById("scale-x-input") as HTMLInputElement
 
         let objects = drawer!!.getObjects();
         console.log(objects);
@@ -272,42 +304,62 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
             break;
           }
           object = objects[i];
-          //If the object is square
           if (object.getType() == ObjectType.SQUARE) {
             const square = object as SquareObject;
-            //let squareVertex = square.getAllVertex()
             const x1 = square.getCenter().x + square.getSize()/canvas.width
             const x2 = square.getCenter().x - square.getSize()/canvas.width
             const y1 = square.getCenter().y + (square.getSize()+square.getSize()/10)/canvas.height
             const y2 = square.getCenter().y - (square.getSize()+square.getSize()/10)/canvas.height
 
-            //If point(x,y) inside square
-            // if (x >= squareVertex[1] && x <= squareVertex[0] && y >= squareVertex[3] && y <= squareVertex[2]) {
             if (x >= x2 && x <= x1 && y >= y2 && y <= y1) {
-              console.log('poin didalem kotak');
+              console.log('poin di dalam kotak');
               break;
             } else {
-              console.log('poin diluar kotak');
+              console.log('poin di luar kotak');
             }
             console.log(square.getCenter());
           }
           
         }
         if (object != null) {
-            // let translate_x = ((value_x - 0) * (1 - -1)) / (800 - 0) + -1;
-            // let translate_y = ((value_y - 0) * (1 - -1)) / (800 - 0) + -1;
-            let scale_sx = Number(value_sx.value)*2/800;
-            let scale_sy = Number(value_sx.value)*2/800;
-            // console.log(translate_x);
-            // console.log(translate_y);
-            // console.log(value_r);
-            // console.log(scale_sx);
-            // console.log(scale_sy);
+            let scale = Number(value_scale.value);
   
-            drawer!!.setTransformObject(
+            drawer!!.setScalingSqaure(
               object as SquareObject,
-              scale_sx,
-              scale_sy
+              scale
+            );
+          }
+    } else if (state == State.COLOR) {
+        //select poly square
+        let objects = drawer!!.getObjects();
+        console.log(objects);
+        let vertex: Vertex = { x, y };
+        const colorInput = document.getElementById('color-input') as HTMLInputElement
+
+        let object;
+
+        for (let i = 0; i <= objects.length; i++) {
+          if (i == objects.length) {
+            object = null;
+            break;
+          }
+          object = objects[i];
+          if (object.getType() == ObjectType.POLYGON) {
+            
+            if(inside(vertex, object as PolygonObject)){
+                console.log('poin di dalam polygon');
+                break;
+            } else {
+                console.log('poin di luar polygon');
+            }
+          }
+          
+        }
+        if (object != null) {
+  
+            drawer!!.setColorPolygon(
+              object as PolygonObject,
+              convertColorString(colorInput.value)
             );
           }
     }
