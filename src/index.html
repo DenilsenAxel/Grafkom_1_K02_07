@@ -1,88 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebGL App</title>
-</head>
-<body>
-    <div id="root">
-        <div id="help-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="close">&times;</span>
-                    <h2>Need Help?</h2>
-                </div>
-                <div class="modal-body">
-                    <p>Help goes here</p>
-                </div>
-                <div class="modal-footer">
-                    <h3>Developed By :</h3>
-                    <ul>
-                        <li>Denilsen Axel Candiasa - 13519059</li>
-                        <li>James Chandra - 13519078</li>
-                        <li>Nabila Hannania - 13519097</li>
-                    </ul>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>WebGL App</title>
+    </head>
+    <body>
+        <div id="root">
+            <div id="help-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="close">&times;</span>
+                        <h2>Need Help?</h2>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Cara Menggambar Garis :</h4>
+                        <ol>
+                            <li>Klik tombol "LINE" dan "DRAW"</li>
+                            <li>
+                                Klik dua kali pada titik yang berbeda untuk meletakan titik awal dan
+                                akhir dari garis
+                            </li>
+                        </ol>
+                        <h4>Cara Mengubah Panjang Garis :</h4>
+                        <ol>
+                            <li>Klik tombol "MOVE"</li>
+                            <li>
+                                Klik salah satu titik ujung garis yang diinginkan kemudian drag ke
+                                titik akhir yang diinginkan
+                            </li>
+                        </ol>
+                        <h4>Cara Menggeser Titik Simpul dengan Mouse :</h4>
+                        <ol>
+                            <li>Klik tombol "MOVE"</li>
+                            <li>
+                                Klik salah satu vertex objek yang diinginkan kemudian drag ke titik
+                                akhir yang diinginkan
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="modal-footer">
+                        <h3>Developed By :</h3>
+                        <ul>
+                            <li>Denilsen Axel Candiasa - 13519059</li>
+                            <li>James Chandra - 13519078</li>
+                            <li>Nabila Hannania - 13519097</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+
+            <div id="toolbar">
+                <h1 id="title">WebCAD</h1>
+
+                <p class="menu-title">Shapes :</p>
+                <div class="btn-container">
+                    <button id="line-btn">LINE</button>
+                    <button id="square-btn">SQUARE</button>
+                    <button id="rectangle-btn">RECTANGLE</button>
+                    <button id="polygon-btn">POLYGON</button>
+                </div>
+
+                <div id="poly-input">
+                    <label for="poly-vertices">Vertices Count :</label>
+                    <input id="poly-vertices" type="number" min="3" value="3" />
+                </div>
+
+                <div id="square-size-input">
+                    <label for="square-size">Size :</label>
+                    <input id="square-size" type="range" min="30" max="300" value="100" />
+                </div>
+
+                <p class="menu-title">Action :</p>
+                <div class="btn-container">
+                    <button id="draw-btn">DRAW</button>
+                    <button id="move-btn">MOVE</button>
+                    <button id="transform-btn">TRANSFORM</button>
+                    <button id="color-btn">COLOR</button>
+                </div>
+
+                <p class="menu-title">Transform :</p>
+                <div class="transform-input-container">
+                    <label for="scale-x-input">Scale :</label>
+                    <input id="scale-x-input" type="range" min="30" max="800" />
+                </div>
+
+                <div class="color-input-container">
+                    <label for="color-input" class="menu-title">Color :</label>
+                    <input id="color-input" type="color" />
+                </div>
+
+                <div class="save-load-btn-container">
+                    <button id="save-btn">SAVE</button>
+                    <button id="load-btn">LOAD</button>
+                    <div class="input-file-container">
+                        <label for="file-input">File :</label>
+                        <input type="file" id="file-input" />
+                    </div>
+                </div>
+
+                <div class="misc-btn-container">
+                    <button id="reset-btn">RESET</button>
+                    <button id="help-btn">HELP</button>
+                </div>
+            </div>
+            <canvas id="glCanvas"></canvas>
         </div>
-
-        <div id="toolbar">
-            <h1 id="title">WebCAD</h1>
-
-            <p class="menu-title">Shapes :</p>
-            <div class="btn-container">
-                <button id="line-btn">LINE</button>
-                <button id="square-btn">SQUARE</button>
-                <button id="rectangle-btn">RECTANGLE</button>
-                <button id="polygon-btn">POLYGON</button>
-            </div>
-
-            <div id="poly-input">
-                <label for="poly-vertices">Vertices Count :</label>
-                <input id="poly-vertices" type="number" min="3" value="3">
-            </div>
-
-            <div id="square-size-input">
-                <label for="square-size">Size :</label>
-                <input id="square-size" type="range" min="30" max="300" value="100">
-            </div>
-
-            <p class="menu-title">Action :</p>
-            <div class="btn-container">
-                <button id="draw-btn">DRAW</button>
-                <button id="move-btn">MOVE</button>
-                <button id="transform-btn">TRANSFORM</button>
-                <button id="color-btn">COLOR</button>
-            </div>
-
-            <p class="menu-title">Transform :</p>
-            <div class="transform-input-container">
-                <label for="scale-x-input">Scale :</label>
-                <input id="scale-x-input" type="range" min="30" max="800">
-            </div>
-
-            <div class="color-input-container">
-                <label for="color-input" class="menu-title">Color :</label>
-                <input id="color-input" type="color">
-            </div>
-
-            <div class="save-load-btn-container">
-                <button id="save-btn">SAVE</button>
-                <button id="load-btn">LOAD</button>
-                <div class="input-file-container">
-                    <label for="file-input">File :</label>
-                    <input type="file" id="file-input">
-                </div>
-            </div>
-
-            <div class="misc-btn-container">
-                <button id="reset-btn">RESET</button>
-                <button id="help-btn">HELP</button>
-            </div>
-        </div>
-        <canvas id="glCanvas"></canvas>
-    </div>
-</body>
+    </body>
 </html>
