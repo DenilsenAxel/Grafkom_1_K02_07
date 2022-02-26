@@ -4,7 +4,13 @@ import FragmentShader from './shaders/FragmentShader.glsl';
 import { Drawer } from './core/Drawer';
 import { ObjectType, State, Vertex } from './types/interfaces';
 import { convertColorString, convertPosToClip } from './utils/Utils';
-import { PointObject, PolygonObject, LineObject, RectangleObject, SquareObject } from "./core/Objects";
+import {
+    PointObject,
+    PolygonObject,
+    LineObject,
+    RectangleObject,
+    SquareObject,
+} from './core/Objects';
 import { loadFile, saveFile } from './utils/SaveLoad';
 
 let drawer: Drawer | null = null;
@@ -14,7 +20,7 @@ let state: State = State.SELECTING;
 let vertices: Array<Vertex> = [];
 let color: number[] = [1.0, 0.0, 0.0, 1.0];
 let objectType: ObjectType | null = null;
-let file: string = ""
+let file: string = '';
 let maxVertex = -1;
 
 function main(): void {
@@ -66,10 +72,10 @@ function setupUI(): void {
     const transformBtn = document.getElementById('transform-btn');
     const colorBtn = document.getElementById('color-btn');
     const resetBtn = document.getElementById('reset-btn');
-    
-    const saveBtn = document.getElementById('save-btn')
-    const loadBtn = document.getElementById('load-btn')
-    const fileInput = document.getElementById('file-input')
+
+    const saveBtn = document.getElementById('save-btn');
+    const loadBtn = document.getElementById('load-btn');
+    const fileInput = document.getElementById('file-input');
 
     const verticesInput = document.getElementById('poly-vertices') as HTMLInputElement;
     const colorInput = document.getElementById('color-input') as HTMLInputElement;
@@ -103,25 +109,25 @@ function setupUI(): void {
         drawer?.reset();
     });
 
-    saveBtn?.addEventListener('click', () =>{
+    saveBtn?.addEventListener('click', () => {
         file = drawer?.exportObjects() as string;
-        saveFile(`${Date.now()}.json`, file)
-    })
+        saveFile(`${Date.now()}.json`, file);
+    });
     loadBtn?.addEventListener('click', () => {
-        drawer?.importObjects(file)
-    })
+        drawer?.importObjects(file);
+    });
 
     verticesInput.addEventListener('change', () => {
         setDrawPoly(parseInt(verticesInput.value));
     });
     colorInput?.addEventListener('change', () => {
         color = convertColorString(colorInput.value);
-    })
+    });
     fileInput?.addEventListener('change', (e) => {
         loadFile(e, (text: string) => {
-            file = text
-        })()
-    })
+            file = text;
+        })();
+    });
 }
 
 function setupModal() {
@@ -265,7 +271,7 @@ function setStateBtnActive(state: State) {
             break;
         case State.COLOR:
             colorBtn?.classList.add('active');
-            sizeInput.style.display = 'none'
+            sizeInput.style.display = 'none';
             break;
         default:
             break;
@@ -277,23 +283,24 @@ function resetVertices() {
     drawer?.clearPoints();
 }
 
-
 function inside(point: Vertex, polygon: PolygonObject) {
-    var x = point.x, y = point.y;
-    
+    var x = point.x,
+        y = point.y;
+
     var inside = false;
-    let polyVertex = polygon.getPoints()
+    let polyVertex = polygon.getPoints();
     for (var i = 0, j = polyVertex.length - 1; i < polyVertex.length; j = i++) {
-        var xi = polyVertex[i].x, yi = polyVertex[i].y;
-        var xj = polyVertex[j].x, yj = polyVertex[j].y;
-        
-        var intersect = ((yi > y) != (yj > y))
-            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        var xi = polyVertex[i].x,
+            yi = polyVertex[i].y;
+        var xj = polyVertex[j].x,
+            yj = polyVertex[j].y;
+
+        var intersect = yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
         if (intersect) inside = !inside;
     }
-    
+
     return inside;
-};
+}
 
 function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
     const bounding = canvas.getBoundingClientRect();
@@ -344,8 +351,12 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
                 //let squareVertex = square.getAllVertex()
                 const x1 = square.getCenter().x + square.getSize() / canvas.width;
                 const x2 = square.getCenter().x - square.getSize() / canvas.width;
-                const y1 = square.getCenter().y + (square.getSize() + square.getSize() / 10) / canvas.height;
-                const y2 = square.getCenter().y - (square.getSize() + square.getSize() / 10) / canvas.height;
+                const y1 =
+                    square.getCenter().y +
+                    (square.getSize() + square.getSize() / 10) / canvas.height;
+                const y2 =
+                    square.getCenter().y -
+                    (square.getSize() + square.getSize() / 10) / canvas.height;
 
                 //If point(x,y) inside square
                 // if (x >= squareVertex[1] && x <= squareVertex[0] && y >= squareVertex[3] && y <= squareVertex[2]) {
@@ -360,46 +371,36 @@ function clickEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
         }
         if (object != null) {
             let scale = Number(value_scale.value);
-  
-            drawer!!.setScalingSqaure(
-              object as SquareObject,
-              scale
-            );
-          }
+
+            drawer!!.setScalingSqaure(object as SquareObject, scale);
+        }
     } else if (state == State.COLOR) {
         //select poly square
         let objects = drawer!!.getObjects();
         console.log(objects);
         let vertex: Vertex = { x, y };
-        const colorInput = document.getElementById('color-input') as HTMLInputElement
+        const colorInput = document.getElementById('color-input') as HTMLInputElement;
 
         let object;
 
         for (let i = 0; i <= objects.length; i++) {
-          if (i == objects.length) {
-            object = null;
-            break;
-          }
-          object = objects[i];
-          if (object.getType() == ObjectType.POLYGON) {
-            
-            if(inside(vertex, object as PolygonObject)){
-                console.log('poin di dalam polygon');
+            if (i == objects.length) {
+                object = null;
                 break;
-            } else {
-                console.log('poin di luar polygon');
             }
-          }
-          
+            object = objects[i];
+            if (object.getType() == ObjectType.POLYGON) {
+                if (inside(vertex, object as PolygonObject)) {
+                    console.log('poin di dalam polygon');
+                    break;
+                } else {
+                    console.log('poin di luar polygon');
+                }
+            }
         }
         if (object != null) {
-  
-            drawer!!.setColorPolygon(
-              object as PolygonObject,
-              convertColorString(colorInput.value)
-            );
-          }
-         
+            drawer!!.setColorPolygon(object as PolygonObject, convertColorString(colorInput.value));
+        }
     }
 }
 
@@ -447,6 +448,35 @@ function dragEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
                         }
                     }
                 });
+            } else if (object.getType() === ObjectType.SQUARE) {
+                let square = object as SquareObject;
+
+                if (!found) {
+                    let distance = getEuclideanDistance(
+                        square.getCenter().x,
+                        square.getCenter().y,
+                        x,
+                        y
+                    );
+                    if (distance <= threshold) {
+                        closestObjectId = currentId;
+                        closestObjectPointId = 1;
+                        found = true;
+                    }
+                }
+            } else if (object.getType() === ObjectType.RECTANGLE) {
+                let rectangle = object as RectangleObject;
+
+                rectangle.getPoints().forEach((point, id) => {
+                    if (!found) {
+                        let distance = getEuclideanDistance(point.x, point.y, x, y);
+                        if (distance <= threshold) {
+                            closestObjectId = currentId;
+                            closestObjectPointId = id;
+                            found = true;
+                        }
+                    }
+                });
             }
         });
 
@@ -469,6 +499,18 @@ function dragEvent(e: MouseEvent, canvas: HTMLCanvasElement) {
                     point.y = y;
 
                     drawer?.replaceObjectAt(closestObjectId, polygon);
+                } else if (object.getType() === ObjectType.SQUARE) {
+                    let square = object as SquareObject;
+                    square.setCenter({ x, y });
+
+                    drawer?.replaceObjectAt(closestObjectId, square);
+                } else if (object.getType() === ObjectType.RECTANGLE) {
+                    let rectangle = object as RectangleObject;
+                    let point = rectangle.getPoints()[closestObjectPointId];
+                    point.x = x;
+                    point.y = y;
+
+                    drawer?.replaceObjectAt(closestObjectId, rectangle);
                 }
             }
             closestObjectId = -1;

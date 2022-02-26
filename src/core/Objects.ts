@@ -8,7 +8,7 @@ export class BaseObject {
 
     constructor(color: number[]) {
         this.projectionMatrix = IdentityMatrix;
-        this.color = color
+        this.color = color;
     }
 
     public getType() {
@@ -73,55 +73,58 @@ export class SquareObject extends BaseObject {
     private width: number = 800;
     private height: number = 600;
 
-    constructor(points: Array<Vertex>, size : number, color: number[]) {
+    constructor(points: Array<Vertex>, size: number, color: number[]) {
         super(color);
-        this.type = ObjectType.SQUARE
-        this.center = points[0]
-        this.size = size
+        this.type = ObjectType.SQUARE;
+        this.center = points[0];
+        this.size = size;
     }
 
     public getCenter() {
-        return this.center
+        return this.center;
+    }
+
+    public setCenter(center: Vertex) {
+        this.center = center;
     }
 
     public getSize() {
-        return this.size
+        return this.size;
     }
 
-    public setSize(size: number){
-        this.size = size
+    public setSize(size: number) {
+        this.size = size;
     }
 
-    public getAllVertex(){
-        const x1 = this.center.x + this.size/this.width
-        const x2 = this.center.x - this.size/this.width
-        const y1 = this.center.y + (this.size + this.size/10)/this.height
-        const y2 = this.center.y - (this.size + this.size/10)/this.height
+    public getAllVertex() {
+        const x1 = this.center.x + this.size / this.width;
+        const x2 = this.center.x - this.size / this.width;
+        const y1 = this.center.y + (this.size + this.size / 10) / this.height;
+        const y2 = this.center.y - (this.size + this.size / 10) / this.height;
 
         // const x1 = this.getCenter().x + 0.5 * this.getSize()
         // const x2 = this.getCenter().x - 0.5 * this.getSize()
         // const y1 = this.getCenter().y + 0.5 * this.getSize()
         // const y2 = this.getCenter().y - 0.5 * this.getSize()
 
-        let squareVertex: Array<number> = []
-        squareVertex.push(x1, x2, y1, y2)
+        let squareVertex: Array<number> = [];
+        squareVertex.push(x1, x2, y1, y2);
 
         return squareVertex;
     }
-
 }
 
 export class RectangleObject extends BaseObject {
     private points: Array<Vertex>;
 
     constructor(points: Array<Vertex>, color: number[]) {
-        super(color)
-        this.type = ObjectType.RECTANGLE
-        this.points = points
+        super(color);
+        this.type = ObjectType.RECTANGLE;
+        this.points = points;
     }
 
     public getPoints() {
-        return this.points
+        return this.points;
     }
 }
 
