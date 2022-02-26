@@ -47,6 +47,10 @@ export class Drawer {
         this.objects.push(obj);
     }
 
+    public replaceObjectAt(index: number, obj: BaseObject) {
+        this.objects[index] = obj;
+    }
+
     public drawScene() {
         for (let i = 0; i < this.objects.length; i++) {
             const obj = this.objects[i];
@@ -215,6 +219,16 @@ export class Drawer {
 
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
         this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
+    }
+
+    public setScalingSqaure(obj: SquareObject, scale: number){
+        obj.setSize(scale)
+        this.drawScene();
+    }
+
+    public setColorPolygon(obj: PolygonObject, color: number[]){
+        obj.setColor(color)
+        this.drawScene();
     }
 
     public setTransformObject(obj: SquareObject, sx: number, sy: number){
