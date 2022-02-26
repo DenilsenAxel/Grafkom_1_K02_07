@@ -1,101 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebGL App</title>
-</head>
-<body>
-    <div id="root">
-        <div id="help-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="close">&times;</span>
-                    <h2>Need Help?</h2>
-                </div>
-                <div class="modal-body">
-                    <h4>Cara Menggambar Garis :</h4>
-                    <ol>
-                        <li>Klik tombol "LINE" dan "DRAW"</li>
-                        <li>
-                            Klik dua kali pada titik yang berbeda untuk meletakan titik awal dan
-                            akhir dari garis
-                        </li>
-                    </ol>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>WebGL App</title>
+    </head>
+    <body>
+        <div id="root">
+            <div id="help-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="close">&times;</span>
+                        <h2>Need Help?</h2>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Cara Menggambar Garis :</h4>
+                        <ol>
+                            <li>Klik tombol "LINE" dan "DRAW"</li>
+                            <li>
+                                Klik dua kali pada titik yang berbeda untuk meletakan titik awal dan
+                                akhir dari garis
+                            </li>
+                        </ol>
+                        <h4>Cara Mengubah Panjang Garis :</h4>
 
-                    <h4>Cara Mengubah Panjang Garis :</h4>
-                    <ol>
-                        <li>Klik tombol "MOVE"</li>
-                        <li>
-                            Klik salah satu titik ujung garis yang diinginkan kemudian drag ke
-                            titik akhir yang diinginkan
-                        </li>
-                    </ol>
-                    
-                    <h4>Cara Menggeser Titik Simpul dengan Mouse :</h4>
-                    <ol>
-                        <li>Klik tombol "MOVE"</li>
-                        <li>
-                            Klik salah satu vertex objek yang diinginkan kemudian drag ke titik
-                            akhir yang diinginkan
-                        </li>
-                    </ol>
+                        <ol>
+                            <li>Klik tombol "MOVE"</li>
+                            <li>
+                                Klik salah satu titik ujung garis yang diinginkan kemudian drag ke
+                                titik akhir yang diinginkan
+                            </li>
+                        </ol>
+                        <h4>Cara Menggeser Titik Simpul dengan Mouse :</h4>
 
-                    <h4>Cara Menggambar Persegi (Square) :</h4>
-                    <ol>
-                        <li>Klik tombol "SQUARE"</li>
-                        <li>Atur ukuran persegi dengan menggeser slider "Size"</li>
-                        <li>Klik canvas 1 kali sebagai titik pusat persegi</li>
-                    </ol>
+                        <ol>
+                            <li>Klik tombol "MOVE"</li>
+                            <li>
+                                Klik salah satu vertex objek yang diinginkan kemudian drag ke titik
+                                akhir yang diinginkan
+                            </li>
+                        </ol>
 
-                    <h4>Cara Menggambar Persegi Panjang (Rectangle) :</h4>
-                    <ol>
-                        <li>Klik tombol "RECTANGLE"</li>
-                        <li>Klik canvas sebanyak 2 kali sebagai titik sudut persegi panjang</li>
-                    </ol>
+                        <h4>Cara Menggambar Persegi (Square) :</h4>
+                        <ol>
+                            <li>Klik tombol "SQUARE"</li>
+                            <li>Atur ukuran persegi dengan menggeser slider "Size"</li>
+                            <li>Klik canvas 1 kali sebagai titik pusat persegi</li>
+                        </ol>
 
-                    <h4>Cara Menggambar Polygon :</h4>
-                    <ol>
-                        <li>Klik tombol "POLYGON"</li>
-                        <li>Masukkan jumlah titik (default terdapat 3 titik)</li>
-                        <li>Klik canvas sebanyak jumlah titik yang sudah dimasukkan</li>
-                    </ol>
+                        <h4>Cara Menggambar Persegi Panjang (Rectangle) :</h4>
+                        <ol>
+                            <li>Klik tombol "RECTANGLE"</li>
+                            <li>Klik canvas sebanyak 2 kali sebagai titik sudut persegi panjang</li>
+                        </ol>
 
-                    <h4>Cara Mengubah Ukuran Sisi Persegi :</h4>
-                    <ol>
-                        <li>Klik tombol "SQUARE"</li>
-                        <li>Klik tombol "TRANSFORM"</li>
-                        <li>Atur ukuran persegi dengan menggeser slider "Scale"</li>
-                        <li>Klik persegi yang ingin diubah ukurannya</li>
-                    </ol>
+                        <h4>Cara Menggambar Polygon :</h4>
+                        <ol>
+                            <li>Klik tombol "POLYGON"</li>
+                            <li>Masukkan jumlah titik (default terdapat 3 titik)</li>
+                            <li>Klik canvas sebanyak jumlah titik yang sudah dimasukkan</li>
+                        </ol>
 
-                    <h4>Cara Mengubah Warna Polygon :</h4>
-                    <ol>
-                        <li>Klik tombol "COLOR"</li>
-                        <li>Pilih warna yang diinginkan menggunakan color input</li>
-                        <li>Klik polygon yang ingin diubah warnanya</li>
-                    </ol>
+                        <h4>Cara Mengubah Ukuran Sisi Persegi :</h4>
+                        <ol>
+                            <li>Klik tombol "SQUARE"</li>
+                            <li>Klik tombol "TRANSFORM"</li>
+                            <li>Atur ukuran persegi dengan menggeser slider "Scale"</li>
+                            <li>Klik persegi yang ingin diubah ukurannya</li>
+                        </ol>
 
-                    <h4>Cara Meng-save Hasil Pekerjaan :</h4>
-                    <ol>
-                        <li>Klik tombol "SAVE"</li>
-                        <li>Pilih folder tempat file akan disimpan</li>
-                    </ol>
+                        <h4>Cara Mengubah Warna Polygon :</h4>
+                        <ol>
+                            <li>Klik tombol "COLOR"</li>
+                            <li>Pilih warna yang diinginkan menggunakan color input</li>
+                            <li>Klik polygon yang ingin diubah warnanya</li>
+                        </ol>
 
-                    <h4>Cara Meng-load Hasil Pekerjaan :</h4>
-                    <ol>
-                        <li>Klik tombol input file</li>
-                        <li>Klik tombol "LOAD"</li>
-                    </ol>
-                </div>
-                <div class="modal-footer">
-                    <h3>Developed By :</h3>
-                    <ul>
-                        <li>Denilsen Axel Candiasa - 13519059</li>
-                        <li>James Chandra - 13519078</li>
-                        <li>Nabila Hannania - 13519097</li>
-                    </ul>
+                        <h4>Cara Meng-save Hasil Pekerjaan :</h4>
+                        <ol>
+                            <li>Klik tombol "SAVE"</li>
+                            <li>Pilih folder tempat file akan disimpan</li>
+                        </ol>
+
+                        <h4>Cara Meng-load Hasil Pekerjaan :</h4>
+                        <ol>
+                            <li>Klik tombol input file</li>
+                            <li>Klik tombol "LOAD"</li>
+                        </ol>
+                    </div>
+                    <div class="modal-footer">
+                        <h3>Developed By :</h3>
+                        <ul>
+                            <li>Denilsen Axel Candiasa - 13519059</li>
+                            <li>James Chandra - 13519078</li>
+                            <li>Nabila Hannania - 13519097</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
