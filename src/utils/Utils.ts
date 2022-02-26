@@ -21,6 +21,23 @@ export const convertPosToClip = (x: number, y: number, bounding: DOMRect) => {
     }
 }
 
-export const createIdentityMatrix = () => {
-    return [1, 0, 0, 0, 1, 0, 0, 0, 1];
-};
+export const convertColorString = (hex: string) => {
+    var chunks = [];
+    var tmp;
+    hex = hex.substring(1); // remove the pound 
+    if ( hex.length === 3){
+        tmp = hex.split("");
+        for(let i = 0; i < 3; i++){
+            chunks.push(parseInt(tmp[i]+""+tmp[i],16)/256);
+        }
+    }else if (hex.length === 6){
+        tmp = hex.match(/.{2}/g) as RegExpMatchArray;
+        for(let i = 0; i < 3; i++){
+            chunks.push(parseInt(tmp[i],16)/256);
+        }
+    }
+
+    return [...chunks, 1.0];
+}
+
+export const IdentityMatrix = [1, 0, 0, 0, 1, 0, 0, 0, 1]

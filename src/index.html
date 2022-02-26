@@ -8,6 +8,26 @@
 </head>
 <body>
     <div id="root">
+        <div id="help-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>Need Help?</h2>
+                </div>
+                <div class="modal-body">
+                    <p>Help goes here</p>
+                </div>
+                <div class="modal-footer">
+                    <h3>Developed By :</h3>
+                    <ul>
+                        <li>Denilsen Axel Candiasa - 13519059</li>
+                        <li>James Chandra - 13519078</li>
+                        <li>Nabila Hannania - 13519097</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <div id="toolbar">
             <h1 id="title">WebCAD</h1>
 
@@ -19,6 +39,16 @@
                 <button id="polygon-btn">POLYGON</button>
             </div>
 
+            <div id="poly-input">
+                <label for="poly-vertices">Vertices Count :</label>
+                <input id="poly-vertices" type="number" min="3" value="3">
+            </div>
+
+            <div id="square-size-input">
+                <label for="square-size">Size :</label>
+                <input id="square-size" type="range" min="30" max="300" value="100">
+            </div>
+
             <p class="menu-title">Action :</p>
             <div class="btn-container">
                 <button id="draw-btn">DRAW</button>
@@ -26,6 +56,37 @@
                 <button id="transform-btn">TRANSFORM</button>
             </div>
 
+            <p class="menu-title">Transform :</p>
+            <div class="transform-input-container">
+                <label for="translate-x-input">Translate X :</label>
+                <input id="translate-x-input" type="range">
+            </div>
+            <div class="transform-input-container">
+                <label for="translate-y-input">Translate Y :</label>
+                <input id="translate-y-input" type="range">
+            </div>
+            <div class="transform-input-container">
+                <label for="rotate-input">Rotate :</label>
+                <input id="rotate-input" type="range">
+            </div>
+            <div class="transform-input-container">
+                <label for="scale-x-input">Scale X :</label>
+                <input id="scale-x-input" type="range" min="30" max="900">
+            </div>
+            <div class="transform-input-container">
+                <label for="scale-y-input">Scale Y :</label>
+                <input id="scale-y-input" type="range" min="30" max="300">
+            </div>
+
+            <div class="color-input-container">
+                <label for="color-input" class="menu-title">Color :</label>
+                <input id="color-input" type="color">
+            </div>
+
+            <div class="misc-btn-container">
+                <button id="reset-btn">RESET</button>
+                <button id="help-btn">HELP</button>
+            </div>
         </div>
         <canvas id="glCanvas"></canvas>
     </div>
